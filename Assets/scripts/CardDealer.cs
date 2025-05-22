@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class CardDealer : MonoBehaviour
 {
-
-    private int playerCard, enemyCard;
-
+    private CardData playerCard, enemyCard;
     public List<CardData> deck;
     private int cardsDealt = 0;
+    public List<CardData> enemy_deck;
+    public List<CardData> player_deck;
 
-   
+
 
     void Update()
     {
@@ -33,10 +33,10 @@ public class CardDealer : MonoBehaviour
         var selectedPrefab = deck[Random.Range(0, deck.Count)];
         if (isPlayer == true)
         {
-            playerCard = selectedPrefab.GetValue();
+            playerCard = selectedPrefab;
         } else
         {
-            enemyCard = selectedPrefab.GetValue();
+            enemyCard = selectedPrefab;
         } 
         selectedPrefab.DrawCard();
 
@@ -57,14 +57,21 @@ public class CardDealer : MonoBehaviour
 
     void Count()
     {
-        switch (playerCard - enemyCard)
+        int result = playerCard.GetValue() - enemyCard.GetValue();
+
+        switch (result)
         {
             case < 0:
                 Debug.Log("Enemy Win!");
+                enemy_deck.Add(playerCard);
+                enemy_deck.Add(enemyCard);
                 break;
+
 
             case > 0:
                 Debug.Log("Player Win!");
+                player_deck.Add(playerCard);
+                player_deck.Add(enemyCard);
                 break;
 
             case 0:

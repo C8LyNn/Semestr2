@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99ea763139997ac4d8958fad97795be9, type: 3}
-  m_Name: card2
+  m_Name: card 11
   m_EditorClassIdentifier: 
-  cardName: card2
-  value: 2
+  cardName: card1
+  value: 1

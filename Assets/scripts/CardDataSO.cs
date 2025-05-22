@@ -8,6 +8,6 @@ public class CardDataSO : ScriptableObject
 
     public void SayHello()
     {
-        Debug.Log($"siema: {cardName}, HP: {value}");
+        Debug.Log($"Karta: {cardName}, HP: {value}");
     }
 }
