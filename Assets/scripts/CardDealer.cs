@@ -24,23 +24,48 @@ public class CardDealer : MonoBehaviour
 
     void DrawCard(bool isPlayer)
     {
-        if (deck.Count == 0)
+        CardData selectedCard = null;
+
+        if (deck.Count > 0)
         {
-            Debug.Log("Talia siê skoñczy³a.");
-            return;
+            // Dobierz kartê z g³ównej talii
+            selectedCard = deck[Random.Range(0, deck.Count)];
+            deck.Remove(selectedCard);
+            Debug.Log("Dobieranie z g³ównej talii.");
+        }
+        else
+        {
+            // Dobierz z odpowiedniej w³asnej talii
+            if (isPlayer && player_deck.Count > 0)
+            {
+                selectedCard = player_deck[Random.Range(0, player_deck.Count)];
+                player_deck.Remove(selectedCard);
+                Debug.Log("Dobieranie z player_deck.");
+            }
+            else if (!isPlayer && enemy_deck.Count > 0)
+            {
+                selectedCard = enemy_deck[Random.Range(0, enemy_deck.Count)];
+                enemy_deck.Remove(selectedCard);
+                Debug.Log("Dobieranie z enemy_deck.");
+            }
+            else
+            {
+                Debug.Log("Brak kart do dobrania dla " + (isPlayer ? "gracza" : "przeciwnika"));
+                return;
+            }
         }
 
-        var selectedPrefab = deck[Random.Range(0, deck.Count)];
-        if (isPlayer == true)
+        // Przypisz kartê i aktywuj
+        if (isPlayer)
         {
-            playerCard = selectedPrefab;
-        } else
+            playerCard = selectedCard;
+        }
+        else
         {
-            enemyCard = selectedPrefab;
-        } 
-        selectedPrefab.DrawCard();
+            enemyCard = selectedCard;
+        }
 
-        deck.Remove(selectedPrefab);
+        selectedCard.DrawCard();
         cardsDealt++;
     }
 
