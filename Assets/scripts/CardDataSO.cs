@@ -4,7 +4,8 @@ using UnityEngine;
 public class CardDataSO : ScriptableObject
 {
     public string cardName;    
-    public int value;           
+    public int value;
+    [SerializeField] public int cardIndex;
 
     public void SayHello()
     {

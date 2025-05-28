@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: 6A
   value: 6
+  cardIndex: 20
