@@ -19,6 +19,8 @@ public class CardDealer : MonoBehaviour
     private List<int> playerOrder = new();
     private List<int> enemyOrder = new();
 
+    public CardDisplayManager displayManager;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -26,6 +28,11 @@ public class CardDealer : MonoBehaviour
             DrawCard(true);
             DrawCard(false);
             Count();
+
+            // wyświetl aktualne karty
+            if (playerCard != null && enemyCard != null)
+                displayManager.ShowCards(playerCard, enemyCard);
+                displayManager.ShowTiebreakerCards(playerTiebreaker, enemyTiebreaker, playerOrder, enemyOrder);
         }
     }
 
@@ -125,7 +132,7 @@ public class CardDealer : MonoBehaviour
     }
 
     IEnumerator HandleTiebreaker(CardData currentPlayerCard, CardData currentEnemyCard)
-    {
+    {displayManager.ShowTiebreakerCards(playerTiebreaker, enemyTiebreaker, playerOrder, enemyOrder);
         int cardCount = 3;
 
         while (true)
@@ -166,6 +173,10 @@ public class CardDealer : MonoBehaviour
 
                 if (p > e) playerPoints++;
                 else if (p < e) enemyPoints++;
+
+                // Opcjonalnie: pokaż każdą parę kart
+                displayManager.ShowCards(pCard, eCard);
+                yield return new WaitForSeconds(1f);
             }
 
             Debug.Log($"Dogrywka: {playerPoints}:{enemyPoints}");
