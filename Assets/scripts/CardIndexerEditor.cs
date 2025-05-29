@@ -1,34 +1,55 @@
-using UnityEngine;
 using UnityEditor;
-using System.IO;
+using UnityEngine;
 
 public class CardIndexerEditor : EditorWindow
 {
-    [MenuItem("Tools/Przypisz CardIndex automatycznie")]
-    static void AssignCardIndexes()
+    [MenuItem("Tools/Ustaw tylko Card Index dla kart")]
+    public static void AssignCardIndexes()
     {
-        string path = "Assets/cards"; // Œcie¿ka do folderu z CardDataSO
-        string[] guids = AssetDatabase.FindAssets("t:CardDataSO", new[] { path });
+        string path = "Assets/CardsPrefabs";
+        string[] guids = AssetDatabase.FindAssets("t:Prefab", new[] { path });
+
+        int index = 0;
 
         foreach (string guid in guids)
         {
             string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            CardDataSO cardData = AssetDatabase.LoadAssetAtPath<CardDataSO>(assetPath);
+            GameObject cardPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
 
-            string name = Path.GetFileNameWithoutExtension(assetPath); // np. "card 5"
-            if (name.StartsWith("card "))
+            if (cardPrefab == null)
+                continue;
+
+            CardData cardData = cardPrefab.GetComponent<CardData>();
+            if (cardData == null)
             {
-                string numberStr = name.Substring(5); // "5"
-                if (int.TryParse(numberStr, out int index))
-                {
-                    cardData.cardIndex = index - 1; // bo indeksujemy od 0
-                    EditorUtility.SetDirty(cardData);
-                    Debug.Log($"Przypisano index {index - 1} dla {name}");
-                }
+                Debug.LogWarning($"Prefab {cardPrefab.name} nie ma komponentu CardData.");
+                continue;
             }
+
+            // Pobierz przypisany ScriptableObject
+            CardDataSO cardSO = GetCardDataSO(cardData);
+            if (cardSO == null)
+            {
+                Debug.LogWarning($"Brak przypisanego CardDataSO w prefabie {cardPrefab.name}");
+                continue;
+            }
+
+            // Ustaw tylko cardIndex, zostawiaj¹c name i value
+            cardSO.cardIndex = index;
+            EditorUtility.SetDirty(cardSO);
+
+            Debug.Log($"Przypisano cardIndex={index} dla: {cardPrefab.name}");
+            index++;
         }
 
         AssetDatabase.SaveAssets();
-        Debug.Log("Zakoñczono przypisywanie indeksów kart.");
+        Debug.Log("Zakoñczono przypisywanie indeksów.");
+    }
+
+    private static CardDataSO GetCardDataSO(CardData cardData)
+    {
+        var so = new SerializedObject(cardData);
+        var property = so.FindProperty("_cardDataSO");
+        return property.objectReferenceValue as CardDataSO;
     }
 }

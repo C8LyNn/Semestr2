@@ -92,7 +92,16 @@ public class CardDealer : MonoBehaviour
 
     void Count()
     {
-        int result = playerCard.GetValue() - enemyCard.GetValue();
+        int playerValue = playerCard.GetValue();
+        int enemyValue = enemyCard.GetValue();
+
+        string playerName = playerCard.GetName();
+        string enemyName = enemyCard.GetName();
+
+        Debug.Log($"Gracz zagrał: {playerName}, HP: {playerValue}");
+        Debug.Log($"Wróg zagrał: {enemyName}, HP: {enemyValue}");
+
+        int result = playerValue - enemyValue;
 
         switch (result)
         {
@@ -147,8 +156,13 @@ public class CardDealer : MonoBehaviour
 
             for (int i = 0; i < cardCount; i++)
             {
-                int p = playerTiebreaker[playerOrder[i]].GetValue();
-                int e = enemyTiebreaker[enemyOrder[i]].GetValue();
+                var pCard = playerTiebreaker[playerOrder[i]];
+                var eCard = enemyTiebreaker[enemyOrder[i]];
+
+                int p = pCard.GetValue();
+                int e = eCard.GetValue();
+
+                Debug.Log($"Runda {i + 1} – Gracz: {pCard.GetName()} ({p}) vs Wróg: {eCard.GetName()} ({e})");
 
                 if (p > e) playerPoints++;
                 else if (p < e) enemyPoints++;
@@ -206,11 +220,9 @@ public class CardDealer : MonoBehaviour
     {
         playerOrder.Clear();
 
-        // do zrobienia w przyszłości
-
+        // docelowo – interfejs gracza do ustawiania kolejności
         for (int i = 0; i < cardCount; i++)
-            playerOrder.Add(i); // tymczasowa automatyczna kolejność dla gracza
-
+            playerOrder.Add(i); // domyślna kolejność
 
         yield return null;
     }

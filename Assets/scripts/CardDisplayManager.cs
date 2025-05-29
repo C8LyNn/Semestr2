@@ -7,28 +7,42 @@ public class CardDisplayManager : MonoBehaviour
 
     private GameObject currentPlayerCard, currentEnemyCard;
 
-    void Start()
+    /// <summary>
+    /// Wyœwietla dwie karty w scenie na podstawie danych (z klasy CardData).
+    /// </summary>
+    public void ShowCards(CardData playerCardData, CardData enemyCardData)
     {
-        // Przyk³ad: poka¿ kartê o indeksie 0 i 1 po uruchomieniu gry
-        ShowCards(0, 1);
-    }
+        // Zniszcz stare karty jeœli s¹
+        if (currentPlayerCard != null)
+            Destroy(currentPlayerCard);
 
-    public void ShowCards(int playerIndex, int enemyIndex)
-    {
-        // Zabezpieczenie przed przekroczeniem zakresu tablicy
+        if (currentEnemyCard != null)
+            Destroy(currentEnemyCard);
+
+        // Upewnij siê, ¿e indeksy s¹ poprawne
+        int playerIndex = playerCardData.cardDataSO.cardIndex;
+        int enemyIndex = enemyCardData.cardDataSO.cardIndex;
+
         if (playerIndex < 0 || playerIndex >= allCardPrefabs.Length ||
             enemyIndex < 0 || enemyIndex >= allCardPrefabs.Length)
         {
-            Debug.LogError("Indeks karty poza zakresem!");
+            Debug.LogError("Nieprawid³owy indeks karty!");
             return;
         }
 
-        // Usuñ poprzednie karty (jeœli istniej¹)
-        if (currentPlayerCard) Destroy(currentPlayerCard);
-        if (currentEnemyCard) Destroy(currentEnemyCard);
+        // Tworzenie kart w odpowiednich miejscach jako dzieci slotów
+        currentPlayerCard = Instantiate(
+            allCardPrefabs[playerIndex],
+            playerSlot.position,
+            Quaternion.identity,
+            playerSlot // <- wa¿ne! przypisz parent
+        );
 
-        // Stwórz nowe instancje kart
-        currentPlayerCard = Instantiate(allCardPrefabs[playerIndex], playerSlot.position, Quaternion.identity);
-        currentEnemyCard = Instantiate(allCardPrefabs[enemyIndex], enemySlot.position, Quaternion.identity);
+        currentEnemyCard = Instantiate(
+            allCardPrefabs[enemyIndex],
+            enemySlot.position,
+            Quaternion.identity,
+            enemySlot // <- wa¿ne! przypisz parent
+        );
     }
 }
